@@ -3,9 +3,10 @@ package com.pkostrzenski.takemine.models;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 @Entity
-@Table(name = "product")
+@Table(name = "products")
 public class Product {
 
     @Id
@@ -40,6 +41,13 @@ public class Product {
     @ManyToOne
     @JoinColumn(name="city_id")
     private City city;
+
+    @OneToMany(
+            mappedBy="product",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL
+    )
+    private Set<Picture> pictures;
 
     public Product() { }
 
@@ -121,5 +129,13 @@ public class Product {
 
     public void setCity(City city) {
         this.city = city;
+    }
+
+    public Set<Picture> getPictures() {
+        return pictures;
+    }
+
+    public void setPictures(Set<Picture> pictures) {
+        this.pictures = pictures;
     }
 }
