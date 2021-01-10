@@ -21,21 +21,16 @@ public class Product {
     @NotNull
     private String description;
 
-    @NotNull
-    private String address;
-
-    @NotNull
-    private String time;
-
-    @NotNull
-    private String date;
-
     @ManyToOne
     @JoinColumn(name="item_id", nullable=false)
     private ItemType itemType;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name="owner_id")
+    private User owner;
+
+    @ManyToOne
+    @JoinColumn(name="buyer_id")
     private User buyer;
 
     @ManyToOne
@@ -45,19 +40,26 @@ public class Product {
     @OneToMany(
             mappedBy="product",
             fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL
+            cascade = CascadeType.MERGE
     )
     private Set<Picture> pictures;
 
+    @OneToMany(
+            mappedBy="product",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.MERGE
+    )
+    private Set<Location> locations;
+
+    @NotNull
+    private boolean sold = false;
+
     public Product() { }
 
-    public Product(int id, @NotEmpty String name, @NotNull String description, @NotNull String address, @NotNull String time, @NotNull String date, ItemType itemType, User buyer, City city) {
+    public Product(int id, @NotEmpty String name, @NotNull String description, ItemType itemType, User buyer, City city) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.address = address;
-        this.time = time;
-        this.date = date;
         this.itemType = itemType;
         this.buyer = buyer;
         this.city = city;
@@ -91,30 +93,6 @@ public class Product {
         this.itemType = itemType;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
     public User getBuyer() {
         return buyer;
     }
@@ -137,5 +115,29 @@ public class Product {
 
     public void setPictures(Set<Picture> pictures) {
         this.pictures = pictures;
+    }
+
+    public Set<Location> getLocations() {
+        return locations;
+    }
+
+    public void setLocations(Set<Location> locations) {
+        this.locations = locations;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+    public boolean isSold() {
+        return sold;
+    }
+
+    public void setSold(boolean sold) {
+        this.sold = sold;
     }
 }

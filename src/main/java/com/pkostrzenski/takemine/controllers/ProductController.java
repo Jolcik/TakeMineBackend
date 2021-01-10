@@ -1,9 +1,11 @@
 package com.pkostrzenski.takemine.controllers;
 
+import com.pkostrzenski.takemine.custom_exceptions.ServiceException;
 import com.pkostrzenski.takemine.models.Product;
 import com.pkostrzenski.takemine.services.interfaces.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -36,8 +38,13 @@ public class ProductController {
     }
 
     @PostMapping("api/products")
-    public ResponseEntity<?> postProduct(@Valid @RequestBody Product product) {
-        return ResponseEntity.ok(productService.addProduct(product));
+    public ResponseEntity<?> postProduct(Authentication authentication, @Valid @RequestBody Product product) {
+        String username = authentication.getName();
+        try {
+            return ResponseEntity.ok(productService.addProduct(product, username));
+        } catch (ServiceException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 

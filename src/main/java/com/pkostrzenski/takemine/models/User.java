@@ -7,6 +7,7 @@ import javax.persistence.*;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 @Entity
 @Table(name = "user")
@@ -25,6 +26,13 @@ public class User {
     @NotNull
     @Column(unique = true)
     private String email;
+
+    @OneToMany(
+            mappedBy="user",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL
+    )
+    private Set<Location> locations;
 
     @JsonIgnore
     private String password;
