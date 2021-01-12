@@ -54,6 +54,12 @@ public class Location {
     @JsonIgnore
     private User user;
 
+    @NotNull
+    private String fromHour;
+
+    @NotNull
+    private String toHour;
+
 
     public Location() { }
 
@@ -159,5 +165,21 @@ public class Location {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getFromHour() {
+        return fromHour;
+    }
+
+    public void setFromHour(String fromHour) {
+        this.fromHour = fromHour;
+    }
+
+    public String getToHour() {
+        return toHour;
+    }
+
+    public void setToHour(String toHour) {
+        this.toHour = toHour;
     }
 }

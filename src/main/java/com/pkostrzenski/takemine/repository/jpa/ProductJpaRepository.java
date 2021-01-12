@@ -12,7 +12,7 @@ import java.util.List;
 public interface ProductJpaRepository extends JpaRepository<Product, Integer> {
     @Query(
             value = "SELECT p.* " +
-                    "FROM takemine.product p " +
+                    "FROM takemine.products p " +
                     "WHERE p.city_id = :cityId",
             nativeQuery = true
     )

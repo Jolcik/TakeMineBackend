@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.pkostrzenski.takemine.services.interfaces.UserService.USER_NOT_FOUND;
 
@@ -48,7 +49,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> getAllProductsByCityId(int cityId) {
-        return productDao.getAllProductsByCityId(cityId);
+        return productDao
+                .getAllProductsByCityId(cityId)
+                .stream()
+                .filter(product -> !product.isSold())
+                .collect(Collectors.toList());
     }
 
     @Override
