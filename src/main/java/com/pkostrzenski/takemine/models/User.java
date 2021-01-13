@@ -2,9 +2,7 @@ package com.pkostrzenski.takemine.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.NaturalId;
-
 import javax.persistence.*;
-
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
@@ -27,12 +25,13 @@ public class User {
     @Column(unique = true)
     private String email;
 
+    @JsonIgnore
     @OneToMany(
             mappedBy="user",
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL
     )
-    private Set<Location> locations;
+    private Set<Notifier> notifiers;
 
     @JsonIgnore
     private String password;
@@ -40,6 +39,9 @@ public class User {
     private boolean active;
     @JsonIgnore
     private String roles;
+
+    @JsonIgnore
+    private String firebaseToken;
 
     public User() {}
     public User(int id, String username, String email, String password, boolean active, String roles) {
@@ -109,5 +111,25 @@ public class User {
 
         if(updatedUser.getEmail() != null)
             this.email = updatedUser.getEmail();
+    }
+
+    public String getFirebaseToken() {
+        return firebaseToken;
+    }
+
+    public void setFirebaseToken(String firebaseToken) {
+        this.firebaseToken = firebaseToken;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Set<Notifier> getNotifiers() {
+        return notifiers;
+    }
+
+    public void setNotifiers(Set<Notifier> notifiers) {
+        this.notifiers = notifiers;
     }
 }

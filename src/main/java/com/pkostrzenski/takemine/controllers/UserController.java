@@ -3,6 +3,7 @@ package com.pkostrzenski.takemine.controllers;
 
 import com.pkostrzenski.takemine.controllers.request_models.*;
 import com.pkostrzenski.takemine.custom_exceptions.ServiceException;
+import com.pkostrzenski.takemine.models.Notifier;
 import com.pkostrzenski.takemine.models.User;
 import com.pkostrzenski.takemine.services.MyUserDetailsService;
 import com.pkostrzenski.takemine.services.interfaces.UserService;
@@ -78,6 +79,23 @@ public class UserController {
             return ErrorResponse.unauthorized();
 
         return ResponseEntity.ok(userService.findById(userId).get()); // ID is OK, because we check it on checkUserAuthentication
+    }
+
+
+    @PostMapping("/api/users/token")
+    public ResponseEntity<?> addFirebaseToken(Authentication authentication, @Valid @RequestBody AddFirebaseTokenRequest data) {
+        try {
+            String username = authentication.getName();
+            userService.setFirebaseToken(username, data.getToken());
+            return ResponseEntity.ok().body(true);
+        } catch (ServiceException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/api/users/notifier")
+    public ResponseEntity<?> addNotifier(@Valid @RequestBody Notifier data) {
+        return ResponseEntity.ok(userService.addNotifier(data));
     }
 
 

@@ -50,9 +50,9 @@ public class Location {
     private Product product;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name="notifier_id")
     @JsonIgnore
-    private User user;
+    private Notifier notifier;
 
     @NotNull
     private String fromHour;
@@ -159,14 +159,6 @@ public class Location {
         this.product = product;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public String getFromHour() {
         return fromHour;
     }
@@ -181,5 +173,50 @@ public class Location {
 
     public void setToHour(String toHour) {
         this.toHour = toHour;
+    }
+
+    public Notifier getNotifier() {
+        return notifier;
+    }
+
+    public void setNotifier(Notifier notifier) {
+        this.notifier = notifier;
+    }
+
+    public boolean daysOverlap(Location location) {
+        return this.isMonday() == location.isMonday() ||
+                this.isTuesday() == location.isTuesday() ||
+                this.isWednesday() == location.isWednesday() ||
+                this.isThursday() == location.isThursday() ||
+                this.isFriday() == location.isFriday() ||
+                this.isSaturday() == location.isSaturday() ||
+                this.isSunday() == location.isSunday();
+    }
+
+    public boolean hoursOverlap(Location location) {
+        int from1 = minutesFromHour(this.getFromHour());
+        int from2 = minutesFromHour(location.getFromHour());
+        int to1 = minutesFromHour(this.getToHour());
+        int to2 = minutesFromHour(location.getToHour());
+
+        return from2 <= to1 && from1 <= to2;
+    }
+
+    private int minutesFromHour(String hour) {
+        // hour in format "18:21"
+        return Integer.parseInt(hour.substring(0, 2)) * 60 + Integer.parseInt(hour.substring(3, 5));
+    }
+
+    /*
+     * Returns distance between two points in meters
+     */
+    public double calculateDistance(Location location) {
+        double theta = this.getLng() - location.getLng();
+        double dist = Math.sin(Math.toRadians(this.getLat())) * Math.sin(Math.toRadians(location.getLat())) + Math.cos(Math.toRadians(this.getLat())) * Math.cos(Math.toRadians(location.getLat())) * Math.cos(Math.toRadians(theta));
+        dist = Math.acos(dist);
+        dist = Math.toDegrees(dist);
+        dist = dist * 60 * 1.1515;
+
+        return dist * 1.609344 * 1000;
     }
 }

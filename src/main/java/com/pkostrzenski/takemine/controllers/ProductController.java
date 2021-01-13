@@ -19,7 +19,12 @@ public class ProductController {
 
     @GetMapping("api/products/{productId}")
     public ResponseEntity<?> getProduct(@NotBlank @PathVariable("productId") Integer productId){
-        return ResponseEntity.ok(productService.getProductById(productId));
+        try {
+            return ResponseEntity.ok(productService.getProductById(productId));
+        } catch (ServiceException e) {
+            return ResponseEntity.notFound().build();
+        }
+
     }
 
     @GetMapping("api/products/from-city/{cityId}")
@@ -42,6 +47,16 @@ public class ProductController {
         String username = authentication.getName();
         try {
             return ResponseEntity.ok(productService.addProduct(product, username));
+        } catch (ServiceException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping("api/products/{productId}/buy")
+    public ResponseEntity<?> buyProduct(Authentication authentication, @NotBlank @PathVariable("productId") Integer productId) {
+        String username = authentication.getName();
+        try {
+            return ResponseEntity.ok(productService.buyProduct(productId, username));
         } catch (ServiceException e) {
             return ResponseEntity.badRequest().build();
         }

@@ -5,6 +5,7 @@ import com.pkostrzenski.takemine.repository.interfaces.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component("UserJPA")
@@ -13,6 +14,10 @@ public class UserJpaDao implements UserDao {
     @Autowired
     UserJpaRepository userJpaRepository;
 
+    @Override
+    public List<User> findAll() {
+        return userJpaRepository.findAll();
+    }
 
     @Override
     public Optional<User> findById(int id) {

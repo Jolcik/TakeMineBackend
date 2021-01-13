@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component("ProductJPA")
 public class ProductJpaDao implements ProductDao {
@@ -30,8 +31,8 @@ public class ProductJpaDao implements ProductDao {
     }
 
     @Override
-    public Product getProductById(int id) {
-        return productJpaRepository.findById(id).get();
+    public Optional<Product> getProductById(int id) {
+        return productJpaRepository.findById(id);
     }
 
     @Override

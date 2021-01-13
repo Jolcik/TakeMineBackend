@@ -1,8 +1,10 @@
 package com.pkostrzenski.takemine.services;
 
 import com.pkostrzenski.takemine.custom_exceptions.ServiceException;
+import com.pkostrzenski.takemine.models.Notifier;
 import com.pkostrzenski.takemine.models.User;
 import com.pkostrzenski.takemine.repository.interfaces.UserDao;
+import com.pkostrzenski.takemine.repository.jpa.NotifierJpaRepository;
 import com.pkostrzenski.takemine.services.interfaces.UserService;
 import com.pkostrzenski.takemine.utils.PasswordValidator;
 import com.pkostrzenski.takemine.utils.UsernameGenerator;
@@ -16,7 +18,11 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
 
+    @Autowired
     UserDao userDao;
+
+    @Autowired
+    NotifierJpaRepository notifierJpaRepository;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -58,6 +64,22 @@ public class UserServiceImpl implements UserService {
 
         user.setPassword(passwordEncoder.encode(newPassword));
         return userDao.save(user);
+    }
+
+    @Override
+    public void setFirebaseToken(String username, String firebaseToken) throws ServiceException {
+        Optional<User> user = userDao.findByUsername(username);
+        if (!user.isPresent())
+            throw new ServiceException("Did not find user with provided ID", USER_NOT_FOUND);
+
+        user.get().setFirebaseToken(firebaseToken);
+        userDao.save(user.get());
+    }
+
+    @Override
+    public Notifier addNotifier(Notifier notifier) {
+        notifier.getLocations().forEach(location -> location.setNotifier(notifier));
+        return notifierJpaRepository.save(notifier);
     }
 
     @Override

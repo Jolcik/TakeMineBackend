@@ -1,5 +1,7 @@
 package com.pkostrzenski.takemine.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -27,10 +29,12 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name="owner_id")
+    @JsonIgnore
     private User owner;
 
     @ManyToOne
     @JoinColumn(name="buyer_id")
+    @JsonIgnore
     private User buyer;
 
     @ManyToOne
